@@ -52,14 +52,14 @@ class People(db.Model):
     mass: Mapped[int] = mapped_column(Integer())
 
     species_id: Mapped[int] = mapped_column(ForeignKey("species.id"))
-    species: Mapped["Species"] = relationship("Species", back_populates="members")
+    species: Mapped["Species"] = relationship(back_populates="members")
 
     homeworld_id: Mapped[int] = mapped_column(ForeignKey("planets.id"))
     homeworld: Mapped["Planets"] = relationship(back_populates="residents")
 
-    pilots = relationship("Pilots", back_populates="person")
+    pilots: Mapped[list["Pilots"]] =relationship(back_populates="person")
 
-    favorites: Mapped[list["Favorites"]] = relationship("Favorites", back_populates="favorite_people")
+    favorites: Mapped[list["Favorites"]] = relationship(back_populates="favorite_people")
 
 class Planets(db.Model):
     __tablename__ = "planets"
@@ -74,7 +74,7 @@ class Planets(db.Model):
     
     residents: Mapped[list["People"]] = relationship(back_populates="homeworld")
     fauna: Mapped[list["Species"]] = relationship(back_populates="homeworld")
-    favorites: Mapped[list["Favorites"]] = relationship("Favorites", back_populates="favorite_planets")
+    favorites: Mapped[list["Favorites"]] = relationship(back_populates="favorite_planets")
 
 class Species(db.Model):
     __tablename__ = "species"
@@ -90,11 +90,11 @@ class Species(db.Model):
     average_height:  Mapped[int] = mapped_column(Integer())
     
     homeworld_id: Mapped[int] = mapped_column(ForeignKey("planets.id"))
-    homeworld: Mapped["Planets"] = relationship("Planets", back_populates="fauna")
+    homeworld: Mapped["Planets"] = relationship(back_populates="fauna")
 
-    members: Mapped[list["People"]] = relationship("People", back_populates="species")
+    members: Mapped[list["People"]] = relationship(back_populates="species")
 
-    favorites: Mapped[list["Favorites"]] = relationship("Favorites", back_populates="favorite_species")
+    favorites: Mapped[list["Favorites"]] = relationship(back_populates="favorite_species")
 
 class Vehicles(db.Model):
     __tablename__ = "vehicles"
@@ -108,15 +108,15 @@ class Vehicles(db.Model):
     model: Mapped[str] = mapped_column(String(120))
     vehicle_class: Mapped[str] = mapped_column(String(120))
 
-    pilots = relationship("Pilots", back_populates="vehicle")
+    pilots: Mapped[list["Pilots"]] = relationship(back_populates="vehicle")
 
-    favorites: Mapped[list["Favorites"]] = relationship("Favorites", back_populates="favorite_vehicles")
+    favorites: Mapped[list["Favorites"]] = relationship(back_populates="favorite_vehicles")
 
 class Pilots(db.Model): #association table for people and vehicles
     __tablename__ = "pilots"
-    person_id = mapped_column(ForeignKey("people.id"), primary_key=True)
-    vehicle_id = mapped_column(ForeignKey("vehicles.id"), primary_key=True)
+    person_id: Mapped[int] = mapped_column(ForeignKey("people.id"), primary_key=True)
+    vehicle_id: Mapped[int] = mapped_column(ForeignKey("vehicles.id"), primary_key=True)
 
-    person = relationship("People", back_populates="pilots")
-    vehicle = relationship("Vehicles", back_populates="pilots")
+    person: Mapped["People"] = relationship(back_populates="pilots")
+    vehicle: Mapped["Vehicles"] = relationship(back_populates="pilots")
 
